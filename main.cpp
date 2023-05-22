@@ -41,7 +41,7 @@ int main() {
 
 
     //Get iwlist output
-    const string iwList = execute("sudo iwlist wlan1 scan");
+    const string iwList = execute("sudo iwlist wlan1 scan | grep -E 'Address:|ESSID:|Encryption:|Frequency:|Quality='");
     cout << iwList << endl;
 
     //Generate unique name
