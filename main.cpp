@@ -40,7 +40,7 @@ int main() {
 
 
     //Get iwlist output
-    const string iwList = execute("sudo iwlist wlan1 scan | grep -E 'Address:|ESSID:|Encryption|Frequency:|Quality=|Protocol'");
+    const string iwList = execute("sudo iwlist wlan1 scan | grep -E 'Address:|ESSID:|Frequency:|Quality=|Protocol:'");
 
     //Generate unique name
     auto t = std::time(nullptr);
