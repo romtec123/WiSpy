@@ -1,14 +1,15 @@
 #include <iostream>
 #include <filesystem>
-#include <algorithm>
+#include <iomanip>
+#include <ctime>
 #include <fstream>
+#include <sstream>
 #include "exec.h"
 
 using namespace std;
 
 bool isExistingDir(const filesystem::path& p) noexcept;
 bool CreateDirectoryRecursive(const std::string & dirName);
-string generateRandomName(int length);
 
 
 
@@ -44,10 +45,18 @@ int main() {
     cout << iwList << endl;
 
     //Generate unique name
-    const string filename = "scan_" + generateRandomName('12') + ".txt";
+    auto t = std::time(nullptr);
+    auto tm = *std::localtime(&t);
+    ostringstream oss;
+    oss << put_time(&tm, "%d-%m-%Y_%H-%M-%S");
+    auto time = oss.str();
+
+    const string filename = "scan_" + time + ".txt";
 
     //Generate output & save it.
     const string fullPath = homedir+filename;
+    cout << fullPath << endl;
+
     ofstream output(fullPath.c_str());
 
     output << "loc=" << loc << "\n" << iwList << endl;
@@ -93,16 +102,3 @@ bool CreateDirectoryRecursive(const std::string & dirName)
     return true;
 }
 
-
-string generateRandomName(int length)
-{
-    auto randchar = []() -> char
-    {
-        const char charset[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-        const size_t max_index = (sizeof(charset) - 1);
-        return charset[ rand() % max_index ];
-    };
-    string str(4,0);
-    generate_n( str.begin(), length, randchar );
-    return str;
-}
