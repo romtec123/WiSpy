@@ -1,6 +1,107 @@
 #include <iostream>
+#include <filesystem>
+#include <fstream>
+#include "exec.h"
+
+using namespace std;
+
+bool isExistingDir(const filesystem::path& p) noexcept;
+bool CreateDirectoryRecursive(const std::string & dirName);
+string generateRandomName(int length);
+
+
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    cout << "WiSpy starting..." << endl;
+
+    //Get home directory
+    string homedir = getenv("HOME"); //stack overflow says this is bad but idk
+    if(homedir.empty())
+    {
+        cout << "Error: Could not get home directory!" << endl;
+        return 0;
+    }
+    const string dataPath = homedir + "/wispy/raw/";
+
+    //Create data directory
+    if(!isExistingDir(dataPath))
+    {
+        CreateDirectoryRecursive(dataPath);
+        cout << "Created directories: " << dataPath << endl;
+    }
+
+    //Get location
+    //This commands works for me, with my Pi. If you want to make it more portable, make a PR.
+    string loc = execute("gpspipe -w -x 10 -n 10 | grep -m 1 TPV | jq -r '[.lat, .lon] | @csv'");
+    if(loc.empty())
+        loc = "NULL"; //yes, i know its a string.
+    cout << loc << endl;
+
+
+    //Get iwlist output
+    const string iwList = execute("sudo iwlist wlan1 scan");
+    cout << iwList << endl;
+
+    //Generate unique name
+    const string filename = "scan_" + generateRandomName('12') + ".txt";
+
+    //Generate output & save it.
+    const string fullPath = homedir+filename;
+    ofstream output(fullPath.c_str());
+
+    output << "loc=" << loc << "\n" << iwList << endl;
+    output.close();
+
+    cout << "Scan saved to: " << filename << endl;
+
     return 0;
+}
+
+
+bool isExistingDir(const filesystem::path& p) noexcept
+{
+    try
+    {
+        return filesystem::is_directory(p);
+    }
+    catch (exception& e)
+    {
+        // Output the error message.
+        const auto theError = string{ e.what() };
+        cerr << theError;
+
+        return false;
+    }
+}
+
+
+
+bool CreateDirectoryRecursive(const std::string & dirName)
+{
+    error_code err;
+    if (!filesystem::create_directories(dirName, err))
+    {
+        if (filesystem::exists(dirName))
+        {
+            return true;    // the folder probably already existed
+        }
+
+        printf("CreateDirectoryRecursive: FAILED to create [%s], err:%s\n", dirName.c_str(), err.message().c_str());
+        return false;
+    }
+    return true;
+}
+
+
+string generateRandomName(int length)
+{
+    auto randchar = []() -> char
+    {
+        const char charset[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        const size_t max_index = (sizeof(charset) - 1);
+        return charset[ rand() % max_index ];
+    };
+    string str(4,0);
+    generate_n( str.begin(), length, randchar );
+    return str;
 }

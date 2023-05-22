@@ -1,3 +1,0 @@
-/Users/admin/code/WiSpy/cmake-build-debug/CMakeFiles/WiSpy.dir
-/Users/admin/code/WiSpy/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/admin/code/WiSpy/cmake-build-debug/CMakeFiles/rebuild_cache.dir
