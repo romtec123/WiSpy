@@ -18,10 +18,10 @@ std::string execute (const std::string & cmd)
     if (!pipe)
         return "ERROR";
 
-    char buffer[128];
+    char buffer[256];
     std::string result = "";
 
-    while (fgets(buffer, 128, pipe) != NULL)
+    while (fgets(buffer, 256, pipe) != NULL)
         result += buffer;
 
     pclose(pipe);
