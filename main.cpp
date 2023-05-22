@@ -37,12 +37,10 @@ int main() {
     string loc = execute("gpspipe -w -x 10 -n 10 | grep -m 1 TPV | jq -r '[.lat, .lon] | @csv'");
     if(loc.empty())
         loc = "NULL"; //yes, i know its a string.
-    cout << loc << endl;
 
 
     //Get iwlist output
     const string iwList = execute("sudo iwlist wlan1 scan | grep -E 'Address:|ESSID:|Encryption:|Frequency:|Quality='");
-    cout << iwList << endl;
 
     //Generate unique name
     auto t = std::time(nullptr);
@@ -54,15 +52,14 @@ int main() {
     const string filename = "scan_" + time + ".txt";
 
     //Generate output & save it.
-    const string fullPath = homedir+filename;
-    cout << fullPath << endl;
+    const string fullPath = dataPath+filename;
 
     ofstream output(fullPath.c_str());
 
     output << "loc=" << loc << "\n" << iwList << endl;
     output.close();
 
-    cout << "Scan saved to: " << filename << endl;
+    cout << "Scan saved to: " << fullPath << endl;
 
     return 0;
 }
