@@ -36,11 +36,20 @@ int main() {
     //This commands works for me, with my Pi. If you want to make it more portable, make a PR.
     string loc = execute("gpspipe -w -x 10 -n 10 | grep -m 1 TPV | jq -r '[.lat, .lon] | @csv'");
     if(loc.empty() || loc.size() < 5)
-        loc = "NULL"; //yes, i know its a string.
+    {
+        cout << "Location was not found, exiting." << endl;
+        return 1;
+    }
 
 
     //Get iwlist output
     const string iwList = execute("sudo iwlist wlan1 scan | grep -E 'Address:|ESSID:|Frequency:|Quality=|Protocol:'");
+
+    if(iwList.empty() || iwList.size() < 16)
+    {
+        cout << "Couldn't find any networks, exiting." << endl;
+        return 1;
+    }
 
     //Generate unique name
     auto t = std::time(nullptr);
