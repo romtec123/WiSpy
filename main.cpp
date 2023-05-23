@@ -35,7 +35,7 @@ int main() {
     //Get location
     //This commands works for me, with my Pi. If you want to make it more portable, make a PR.
     string loc = execute("gpspipe -w -x 10 -n 10 | grep -m 1 TPV | jq -r '[.lat, .lon] | @csv'");
-    if(loc.empty())
+    if(loc.empty() || loc.size() < 5)
         loc = "NULL"; //yes, i know its a string.
 
 
