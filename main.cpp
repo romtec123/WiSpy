@@ -34,7 +34,7 @@ int main() {
         cout << "Error: Could not get home directory!" << endl;
         return 0;
     }
-    dataPath = homedir + "/wispy/raw/";
+    dataPath = homedir + "/wifidata/raw/";
 
     //Create data directory
     if (!isExistingDir(dataPath)) {
