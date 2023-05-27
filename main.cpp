@@ -46,7 +46,7 @@ int main() {
     //Start timer
     timer_start(scan, 20000);
 
-    while(true);
+    while(true); //your thread belongs to me (if you know a better way to keep running pls PR)
 
 
 }
@@ -82,7 +82,7 @@ void scan() {
 
 
     //Get iwlist output
-    const string iwList = execute("sudo iwlist wlan1 scan | grep -E 'Address:|ESSID:|Frequency:|Quality=|Protocol:'");
+    const string iwList = execute("sudo iwlist wlan1 scan");
 
     if(iwList.empty() || iwList.size() < 16)
     {
@@ -94,7 +94,7 @@ void scan() {
     auto t = time(nullptr);
     auto tm = *localtime(&t);
     ostringstream oss;
-    oss << put_time(&tm, "%d-%m-%Y_%H-%M-%S");
+    oss << put_time(&tm, "%m-%d-%Y_%H-%M-%S");
     auto time = oss.str();
 
     const string filename = "scan_" + time + ".txt";
